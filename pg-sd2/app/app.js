@@ -29,6 +29,11 @@ app.get("/db_test", function(req, res) {
 // Responds to a 'GET' request
 app.get("/goodbye", function(req, res) {
     res.send("Goodbye world!");
+
+});
+app.get("/students", async function(req, res) {
+    const rows = await db.query("SELECT * FROM Students");
+    res.json(rows);
 });
 
 // Create a dynamic route for /hello/<name>, where name is any value provided by user
@@ -44,5 +49,5 @@ app.get("/hello/:name", function(req, res) {
 
 // Start server on port 3000
 app.listen(3000,function(){
-    console.log(`Server running at http://127.0.0.1:3000/`);
+    console.log(`Server running at http://127.0.0.1:3001/`);
 });

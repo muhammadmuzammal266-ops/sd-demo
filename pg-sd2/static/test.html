@@ -1,1 +1,26 @@
-test html file in static dir
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Students</h1>
+<table border="1" id="table">
+<tr><th>ID</th><th>Name</th></tr>
+</table>
+
+<script>
+fetch('/students')
+.then(res => res.json())
+.then(data => {
+    let table = document.getElementById("table");
+
+    data.forEach(s => {
+        table.innerHTML += `<tr>
+            <td>${s.id}</td>
+            <td>${s.name}</td>
+        </tr>`;
+    });
+});
+</script>
+
+</body>
+</html>
