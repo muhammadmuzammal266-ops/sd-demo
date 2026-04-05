@@ -1,0 +1,7 @@
+extends layout
+
+block content
+  h1 Programme #{id}
+  h2 Modules
+  each item in data
+    p #{item.module}
