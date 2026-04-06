@@ -8,7 +8,6 @@ app.set('view engine', 'pug');
 app.set('views', './app/views');
 
 const db = require('./services/db');
-
 const { Student } = require("./models/student");
 const programmes = require("./models/programmes");
 
@@ -24,7 +23,7 @@ app.get("/all-students-formatted", function(req, res) {
     });
 });
 
-// SINGLE STUDENT (MAIN PAGE)
+// SINGLE STUDENT
 app.get("/student-single/:id", async function (req, res) {
     let student = new Student(req.params.id);
 

@@ -8,7 +8,6 @@ class Programme {
     async getProgrammeName() {
         var sql = "SELECT * FROM Programmes WHERE id = ?";
         const result = await db.query(sql, [this.id]);
-
         this.pName = result[0].name;
     }
 }

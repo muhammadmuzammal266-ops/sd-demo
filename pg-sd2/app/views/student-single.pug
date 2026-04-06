@@ -5,30 +5,32 @@ block content
 
   p Programme: #{student.programme.name}
 
-  p Note: #{student.note}
+  p Note for this student: #{student.note}
 
   h2 Modules
   ul
     each m in student.modules
       li #{m.name}
 
-  h2 Add Note
+  // ADD NOTE FORM
+  h2 Add a note
   form(action='/add-note', method='POST')
     input(type='hidden' name='id' value=student.id)
-    textarea(name='note')
+    textarea(name='note' rows=6 cols=50)
     br
-    input(type='submit' value='Save')
+    input(type='submit' value='Submit')
 
+  // CHANGE PROGRAMME
   h2 Change Programme
   form(action='/allocate-programme', method='POST')
     input(type='hidden' name='id' value=student.id)
 
     select(name='programme')
-      each p in programmes
-        if p.id == student.programme.id
-          option(value=p.id selected) #{p.pName}
+      each programme in programmes
+        if programme.id == student.programme.id
+          option(value=programme.id selected='selected') #{programme.pName}
         else
-          option(value=p.id) #{p.pName}
+          option(value=programme.id) #{programme.pName}
 
     br
-    input(type='submit' value='Update')
+    input(type='submit' value='Submit')

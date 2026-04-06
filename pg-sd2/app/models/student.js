@@ -53,7 +53,10 @@ class Student {
     }
 
     async updateStudentProgramme(programme) {
-        await this.deleteStudentProgramme();
+        const existing = await this.getStudentProgramme();
+        if (this.programme) {
+            await this.deleteStudentProgramme();
+        }
         await this.addStudentProgramme(programme);
     }
 }
