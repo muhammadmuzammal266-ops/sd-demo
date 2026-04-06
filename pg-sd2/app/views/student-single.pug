@@ -2,8 +2,33 @@ extends layout
 
 block content
   h1 #{student.name}
-  p Programme: #{student.programme}
+
+  p Programme: #{student.programme.name}
+
+  p Note: #{student.note}
 
   h2 Modules
-  each m in student.modules
-    p #{m.name}
+  ul
+    each m in student.modules
+      li #{m.name}
+
+  h2 Add Note
+  form(action='/add-note', method='POST')
+    input(type='hidden' name='id' value=student.id)
+    textarea(name='note')
+    br
+    input(type='submit' value='Save')
+
+  h2 Change Programme
+  form(action='/allocate-programme', method='POST')
+    input(type='hidden' name='id' value=student.id)
+
+    select(name='programme')
+      each p in programmes
+        if p.id == student.programme.id
+          option(value=p.id selected) #{p.pName}
+        else
+          option(value=p.id) #{p.pName}
+
+    br
+    input(type='submit' value='Update')

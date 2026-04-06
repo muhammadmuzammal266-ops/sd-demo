@@ -2,6 +2,7 @@ const express = require("express");
 var app = express();
 
 app.use(express.static("static"));
+app.use(express.urlencoded({ extended: true }));
 
 app.set('view engine', 'pug');
 app.set('views', './app/views');
@@ -9,54 +10,54 @@ app.set('views', './app/views');
 const db = require('./services/db');
 
 const { Student } = require("./models/student");
-const { Programme } = require("./models/programme");
-const { Module } = require("./models/module");
+const programmes = require("./models/programmes");
 
 // ROOT
 app.get("/", function(req, res) {
     res.render("index");
 });
 
-// STUDENTS LIST (CLICKABLE)
+// ALL STUDENTS
 app.get("/all-students-formatted", function(req, res) {
     db.query("SELECT * FROM Students").then(results => {
         res.render('all-students', { data: results });
     });
 });
 
-// SINGLE STUDENT (MVC)
+// SINGLE STUDENT (MAIN PAGE)
 app.get("/student-single/:id", async function (req, res) {
     let student = new Student(req.params.id);
-    await student.load();
-    res.render("student-single", { student: student });
-});
 
-// PROGRAMMES LIST (CLICKABLE)
-app.get("/programmes", function(req, res) {
-    db.query("SELECT * FROM Programmes").then(results => {
-        res.render('programmes', { data: results });
+    await student.getStudentDetails();
+    await student.getStudentProgramme();
+    await student.getStudentModules();
+
+    let allProgrammes = await programmes.getAllProgrammes();
+
+    res.render("student-single", {
+        student: student,
+        programmes: allProgrammes
     });
 });
 
-// SINGLE PROGRAMME (MVC)
-app.get("/programme-single/:id", async function (req, res) {
-    let programme = new Programme(req.params.id);
-    await programme.load();
-    res.render("programme-single", { programme: programme });
+// ADD NOTE
+app.post('/add-note', async function (req, res) {
+    let params = req.body;
+    let student = new Student(params.id);
+
+    await student.addStudentNote(params.note);
+
+    res.redirect('/student-single/' + params.id);
 });
 
-// MODULES LIST (CLICKABLE)
-app.get("/modules", function(req, res) {
-    db.query("SELECT * FROM Modules").then(results => {
-        res.render('modules', { data: results });
-    });
-});
+// UPDATE PROGRAMME
+app.post('/allocate-programme', async function (req, res) {
+    let params = req.body;
+    let student = new Student(params.id);
 
-// SINGLE MODULE (MVC)
-app.get("/module-single/:code", async function(req, res) {
-    let module = new Module(req.params.code);
-    await module.load();
-    res.render("module-single", { module: module });
+    await student.updateStudentProgramme(params.programme);
+
+    res.redirect('/student-single/' + params.id);
 });
 
 // START

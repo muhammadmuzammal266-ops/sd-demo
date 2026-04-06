@@ -1,32 +1,60 @@
 const db = require('./../services/db');
 
 class Student {
+    id;
+    name;
+    programme;
+    modules = [];
+    note;
+
     constructor(id) {
         this.id = id;
     }
 
-    async load() {
-        let stSql = `
-        SELECT s.name as student, ps.name as programme, ps.id as pcode
-        FROM Students s
-        JOIN Student_Programme sp on sp.id = s.id
-        JOIN Programmes ps on ps.id = sp.programme
-        WHERE s.id = ?`;
+    async getStudentDetails() {
+        var sql = "SELECT * FROM Students WHERE id = ?";
+        const results = await db.query(sql, [this.id]);
+        this.name = results[0].name;
+        this.note = results[0].note;
+    }
 
-        let stResult = await db.query(stSql, [this.id]);
+    async getStudentProgramme() {
+        var sql = `
+        SELECT p.* FROM Student_Programme sp
+        JOIN Programmes p ON sp.programme = p.id
+        WHERE sp.id = ?`;
+        const result = await db.query(sql, [this.id]);
+        this.programme = result[0];
+    }
 
-        this.name = stResult[0].student;
-        this.programme = stResult[0].programme;
-        let pCode = stResult[0].pcode;
+    async getStudentModules() {
+        var sql = `
+        SELECT m.* FROM Programme_Modules pm
+        JOIN Modules m ON pm.module = m.code
+        WHERE pm.programme = ?`;
+        const result = await db.query(sql, [this.programme.id]);
+        this.modules = result;
+    }
 
-        let modSql = `
-        SELECT m.name FROM Programme_Modules pm
-        JOIN Modules m on m.code = pm.module
-        WHERE programme = ?`;
+    async addStudentNote(note) {
+        var sql = "UPDATE Students SET note = ? WHERE id = ?";
+        await db.query(sql, [note, this.id]);
+        this.note = note;
+    }
 
-        let modResult = await db.query(modSql, [pCode]);
+    async deleteStudentProgramme() {
+        var sql = "DELETE FROM Student_Programme WHERE id = ?";
+        await db.query(sql, [this.id]);
+    }
 
-        this.modules = modResult;
+    async addStudentProgramme(programme) {
+        var sql = "INSERT INTO Student_Programme (id, programme) VALUES (?, ?)";
+        await db.query(sql, [this.id, programme]);
+    }
+
+    async updateStudentProgramme(programme) {
+        await this.deleteStudentProgramme();
+        await this.addStudentProgramme(programme);
     }
 }
 
