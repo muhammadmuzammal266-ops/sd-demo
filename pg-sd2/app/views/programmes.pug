@@ -2,8 +2,14 @@ extends layout
 
 block content
   h1 Programmes
+
   table(border=1)
+    tr
+      th ID
+      th Name
+
     each item in data
       tr
-        td 
+        td #{item.id}
+        td
           a(href='/programme-single/' + item.id) #{item.name}

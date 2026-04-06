@@ -1,7 +1,8 @@
 extends layout
 
 block content
-  h1 Programme #{id}
+  h1 #{programme.name}
+
   h2 Modules
-  each item in data
-    p #{item.module}
+  each m in programme.modules
+    p #{m.name}

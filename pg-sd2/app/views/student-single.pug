@@ -1,7 +1,9 @@
 extends layout
 
 block content
-  h1 Student
-  p Name: #{data.student}
-  p Programme: #{data.programme}
-  
+  h1 #{student.name}
+  p Programme: #{student.programme}
+
+  h2 Modules
+  each m in student.modules
+    p #{m.name}

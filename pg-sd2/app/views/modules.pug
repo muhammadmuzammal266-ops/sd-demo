@@ -2,8 +2,6 @@ extends layout
 
 block content
   h1 Modules
-  table(border=1)
-    each item in data
-      tr
-        td 
-          a(href='/module-single/' + item.code) #{item.name}
+  each m in data
+    p 
+      a(href='/module-single/' + m.code) #{m.name}
